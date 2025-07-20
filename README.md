@@ -1,124 +1,124 @@
 # LearnMate Frontend
 
-An AI-powered e-learning platform designed to help students study smarter, not harder. The app allows users to input or upload academic content (notes, articles, or textbooks) and generates concise summaries, quizzes, and categorized learning materials using AI.
+A modern React/Next.js frontend for the LearnMate learning platform with authentication powered by a Fastify backend.
 
 ## Features
 
-- **Smart Summarization**: Convert long academic texts into digestible bullet points or paragraphs
-- **Quiz Generation**: Create objective-style or short-answer quizzes based on content
-- **Categorization**: Automatically tag content by topic or subject for easy retrieval
-- **User Authentication**: Secure login and registration system
-- **Modern UI**: Clean and minimal interface built with ShadCN UI components
+- 🔐 **Authentication System**: Login and registration with JWT tokens
+- 🎨 **Modern UI**: Beautiful, responsive design with Tailwind CSS
+- 📱 **Mobile Friendly**: Optimized for all device sizes
+- 🔄 **Real-time Updates**: Toast notifications for user feedback
+- 🛡️ **Protected Routes**: Automatic redirection for authenticated users
 
-## Tech Stack
+## Prerequisites
 
-- **Framework**: Next.js 15 (App Router)
-- **Styling**: TailwindCSS v4
-- **UI Components**: ShadCN UI
-- **Language**: TypeScript
-- **State Management**: React hooks (useState, useEffect)
-- **Backend**: Fastify (planned)
+- Node.js 18+
+- npm or yarn
+- LearnMate Fastify backend running on `http://localhost:3000`
 
-## Getting Started
+## Setup Instructions
 
-1. Install dependencies:
+1. **Install Dependencies**
 
    ```bash
    npm install
    ```
 
-2. Run the development server:
+2. **Configure API URL** (Optional)
+
+   Create a `.env.local` file in the frontend directory:
+
+   ```bash
+   # API Configuration
+   NEXT_PUBLIC_API_URL=http://localhost:3000
+   ```
+
+   If you don't create this file, it will default to `http://localhost:3000`.
+
+3. **Start the Development Server**
 
    ```bash
    npm run dev
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. **Open your browser**
 
-## Authentication Forms
+   Navigate to `http://localhost:3001` (or the port shown in your terminal)
 
-The application includes two authentication forms:
+## Backend Integration
 
-### Login Form (`/auth/login`)
+This frontend is designed to work with the LearnMate Fastify backend. Make sure your backend is running and provides the following endpoints:
 
-- Email and password fields
-- Form validation
-- Loading states
-- Link to registration page
+- `POST /register` - User registration
+- `POST /login` - User authentication
+- `GET /profile` - Get user profile (protected)
 
-### Registration Form (`/auth/register`)
+## Authentication Flow
 
-- Full name, email, password, and confirm password fields
-- Comprehensive form validation including:
-  - Required field validation
-  - Email format validation
-  - Password strength requirements (minimum 6 characters)
-  - Password confirmation matching
-- Real-time error clearing
-- Loading states
-- Link to login page
-
-## Color Theme
-
-LearnMate uses a modern blue-based color scheme:
-
-- **Primary**: Blue (#3B82F6) - Used for buttons, links, and brand elements
-- **Background**: Light blue gradient (#EFF6FF to #E0E7FF)
-- **Text**: Dark gray (#111827) for headings, medium gray (#6B7280) for body text
-- **Accents**: Green (#10B981) and Purple (#8B5CF6) for feature highlights
+1. **Registration**: Users can create new accounts with email, name, and password
+2. **Login**: Users authenticate with email and password
+3. **Token Storage**: JWT tokens are stored in localStorage
+4. **Protected Routes**: Authenticated users are redirected to `/dashboard`
+5. **Logout**: Users can logout and are redirected to login page
 
 ## Project Structure
 
 ```
 src/
-├── app/
-│   ├── auth/
-│   │   ├── login/
-│   │   │   └── page.tsx
-│   │   └── register/
-│   │       └── page.tsx
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   └── ui/
-│       ├── button.tsx
-│       ├── card.tsx
-│       ├── input.tsx
-│       ├── label.tsx
-│       └── navigation.tsx
-└── lib/
-    └── utils.ts
+├── app/                    # Next.js app directory
+│   ├── auth/              # Authentication pages
+│   │   ├── login/         # Login page
+│   │   └── register/      # Registration page
+│   ├── dashboard/         # Dashboard page (protected)
+│   └── layout.tsx         # Root layout with providers
+├── components/            # Reusable UI components
+│   └── ui/               # Base UI components
+├── contexts/             # React contexts
+│   └── AuthContext.tsx   # Authentication context
+├── hooks/                # Custom hooks
+│   └── use-toast.ts      # Toast notification hook
+└── lib/                  # Utility libraries
+    └── api.ts            # API service
 ```
 
-## Next Steps
+## Available Scripts
 
-- [ ] Connect authentication forms to backend API
-- [ ] Implement user session management
-- [ ] Add content upload functionality
-- [ ] Integrate AI summarization and quiz generation
-- [ ] Add user dashboard
-- [ ] Implement content categorization
-- [ ] Add search and filtering capabilities
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Environment Variables
+
+| Variable              | Description     | Default                 |
+| --------------------- | --------------- | ----------------------- |
+| `NEXT_PUBLIC_API_URL` | Backend API URL | `http://localhost:3000` |
+
+## Troubleshooting
+
+### CORS Issues
+
+If you encounter CORS errors, make sure your backend has CORS configured to allow requests from your frontend domain.
+
+### Authentication Issues
+
+- Check that your backend is running on the correct port
+- Verify the API endpoints are working correctly
+- Check browser console for error messages
+
+### Build Issues
+
+- Clear `.next` directory: `rm -rf .next`
+- Reinstall dependencies: `rm -rf node_modules && npm install`
 
 ## Contributing
 
-1. Follow the existing code style and patterns
-2. Use clear commit messages following conventional commits
-3. Test your changes thoroughly
-4. Update documentation as needed
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is part of the LearnMate platform.
