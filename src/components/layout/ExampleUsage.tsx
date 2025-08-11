@@ -15,7 +15,7 @@ export function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
           <p className="text-muted-foreground">
-            Welcome back! Here's what's happening with your studies.
+            Welcome back! Here&apos;s what&apos;s happening with your studies.
           </p>
         </div>
 
@@ -23,7 +23,9 @@ export function DashboardPage() {
           <Card>
             <CardHeader>
               <CardTitle>Recent Subjects</CardTitle>
-              <CardDescription>Subjects you've been studying</CardDescription>
+              <CardDescription>
+                Subjects you&apos;ve been studying
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
