@@ -27,6 +27,7 @@ import {
   ChevronRight,
   Home,
 } from "lucide-react";
+import { useAuthStore } from "@/store/authStore";
 
 interface GlobalLayoutProps {
   children: React.ReactNode;
@@ -44,7 +45,20 @@ const navigationItems = [
 
 export default function GlobalLayout({ children }: GlobalLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [notifications] = useState(3); // Mock notification count
+  const { user, logout, isLoading } = useAuthStore();
+  const [notifications] = useState(3);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="flex h-screen bg-background">
@@ -136,39 +150,56 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
             </Button>
 
             {/* Profile Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center space-x-2"
-                >
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-primary-foreground" />
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center space-x-2"
+                  >
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                    <span className="hidden sm:block capitalize">
+                      {user.name}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none capitalize">
+                        {user.name}
+                      </p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
                   </div>
-                  <span className="hidden sm:block">John Doe</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="flex items-center justify-start gap-2 p-2">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <User className="h-4 w-4 text-primary-foreground" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium leading-none">John Doe</p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      john.doe@example.com
-                    </p>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Account Settings</DropdownMenuItem>
-                <DropdownMenuItem>Help & Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Sign Out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Account Settings</DropdownMenuItem>
+                  <DropdownMenuItem>Help & Support</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link href="/auth/login">
+                  <Button variant="ghost" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/register">
+                  <Button size="sm">Sign Up</Button>
+                </Link>
+              </div>
+            )}
           </div>
         </header>
 
