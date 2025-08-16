@@ -2,35 +2,12 @@
 
 import { useState } from "react";
 import GlobalLayout from "@/components/layout/GlobalLayout";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { FileText, Upload, Loader2, AlertCircle } from "lucide-react";
-
-interface SummarizationResult {
-  summary: string;
-  processing_time?: number;
-}
-
-interface FileProcessingResult {
-  filename: string;
-  file_type: string;
-  original_text_length: number;
-  cleaned_text_length: number;
-  summary: string;
-  summary_length: number;
-  max_length: number;
-  chunk_size: number;
-  processing_method: string;
-}
+import SummarizeFileUpload from "@/components/summarizer/SummarizeFileUpload";
+import SummarizeText from "@/components/summarizer/SummarizeText";
+import { Sparkles, FileText, Upload } from "lucide-react";
+import { FileProcessingResult, SummarizationResult } from "@/types/Summarize";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { summarizerApi } from "@/lib";
 
 export default function SummarizerPage() {
   const [inputText, setInputText] = useState("");
@@ -46,6 +23,7 @@ export default function SummarizerPage() {
   const [fileError, setFileError] = useState<string>("");
   const [maxLength, setMaxLength] = useState(150);
   const [chunkSize, setChunkSize] = useState(1000);
+  const [copiedText, setCopiedText] = useState<string>("");
 
   const handleTextSummarization = async () => {
     if (!inputText.trim()) return;
@@ -54,22 +32,10 @@ export default function SummarizerPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:9000/api/summarize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: inputText,
-          max_length: 150,
-        }),
+      const data = await summarizerApi.summarizeText({
+        text: inputText,
+        max_length: 150,
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate summary");
-      }
-
-      const data = await response.json();
       setSummary(data);
     } catch (error) {
       console.error("Error generating summary:", error);
@@ -94,6 +60,16 @@ export default function SummarizerPage() {
     }
   };
 
+  const handleCopyText = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedText(type);
+      setTimeout(() => setCopiedText(""), 2000);
+    } catch (error) {
+      console.error("Failed to copy text:", error);
+    }
+  };
+
   const handleFileProcessing = async () => {
     if (!selectedFile) return;
 
@@ -101,25 +77,11 @@ export default function SummarizerPage() {
     setFileError("");
 
     try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      formData.append("max_length", maxLength.toString());
-      formData.append("chunk_size", chunkSize.toString());
-
-      const response = await fetch(
-        "http://localhost:9000/api/files/upload-and-summarize",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to process file");
-      }
-
-      const data = await response.json();
+      const data = await summarizerApi.summarizeFile({
+        file: selectedFile,
+        max_length: maxLength,
+        chunk_size: chunkSize,
+      });
       setFileResult(data);
     } catch (error: unknown) {
       console.error("Error processing file:", error);
@@ -133,258 +95,72 @@ export default function SummarizerPage() {
     }
   };
 
-  const handleTextExtraction = async () => {
-    if (!selectedFile) return;
-
-    setIsFileProcessing(true);
-    setFileError("");
-
-    try {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-
-      const response = await fetch(
-        "http://localhost:9000/api/files/extract-text",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to extract text");
-      }
-
-      const data = await response.json();
-      setFileResult(data);
-    } catch (error: unknown) {
-      console.error("Error extracting text:", error);
-      setFileError(
-        error instanceof Error
-          ? error.message
-          : "Failed to extract text. Please try again."
-      );
-    } finally {
-      setIsFileProcessing(false);
-    }
-  };
-
   return (
     <GlobalLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">
-            AI Text Summarizer
-          </h1>
-          <p className="text-muted-foreground">
-            Generate concise summaries from text or uploaded documents
-          </p>
-        </div>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-4">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="p-3 bg-primary/10 rounded-xl">
+                  <Sparkles className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              <h1 className="text-4xl font-serif font-bold text-foreground tracking-tight">
+                AI Text Summarizer
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Transform lengthy documents and text into concise, meaningful
+                summaries using advanced AI technology
+              </p>
+            </div>
 
-        {/* File Upload Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Upload Document
-            </CardTitle>
-            <CardDescription>
-              Upload PDF or DOCX files to extract text and generate summaries
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="file">Select File</Label>
-              <input
-                id="file"
-                type="file"
-                accept=".pdf,.docx"
-                onChange={handleFileUpload}
-                className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
-              />
-              {selectedFile && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            {/* Summarization Tabs */}
+            <Tabs defaultValue="file" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto">
+                <TabsTrigger value="file" className="flex items-center gap-2">
+                  <Upload className="h-4 w-4" />
+                  File Upload
+                </TabsTrigger>
+                <TabsTrigger value="text" className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  <span>{selectedFile.name}</span>
-                  <Badge variant="secondary">
-                    {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                  </Badge>
-                </div>
-              )}
-            </div>
+                  Text Input
+                </TabsTrigger>
+              </TabsList>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="maxLength">Summary Length</Label>
-                <input
-                  id="maxLength"
-                  type="number"
-                  min="50"
-                  max="500"
-                  value={maxLength}
-                  onChange={(e) => setMaxLength(parseInt(e.target.value))}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              <TabsContent value="file" className="mt-6">
+                <SummarizeFileUpload
+                  handleFileUpload={handleFileUpload}
+                  selectedFile={selectedFile}
+                  maxLength={maxLength}
+                  setMaxLength={setMaxLength}
+                  chunkSize={chunkSize}
+                  setChunkSize={setChunkSize}
+                  handleFileProcessing={handleFileProcessing}
+                  isFileProcessing={isFileProcessing}
+                  fileError={fileError}
+                  fileResult={fileResult}
+                  handleCopyText={handleCopyText}
+                  copiedText={copiedText}
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="chunkSize">Chunk Size</Label>
-                <input
-                  id="chunkSize"
-                  type="number"
-                  min="500"
-                  max="2000"
-                  value={chunkSize}
-                  onChange={(e) => setChunkSize(parseInt(e.target.value))}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              </TabsContent>
+
+              <TabsContent value="text" className="mt-6">
+                <SummarizeText
+                  inputText={inputText}
+                  setInputText={setInputText}
+                  handleTextSummarization={handleTextSummarization}
+                  isProcessing={isProcessing}
+                  error={error}
+                  summary={summary}
+                  copiedText={copiedText}
+                  handleCopyText={handleCopyText}
                 />
-              </div>
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                onClick={handleFileProcessing}
-                disabled={!selectedFile || isFileProcessing}
-                className="flex-1"
-              >
-                {isFileProcessing ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-4 w-4 mr-2" />
-                    Process & Summarize
-                  </>
-                )}
-              </Button>
-              <Button
-                onClick={handleTextExtraction}
-                disabled={!selectedFile || isFileProcessing}
-                variant="outline"
-              >
-                Extract Text Only
-              </Button>
-            </div>
-
-            {fileError && (
-              <div className="flex items-center gap-2 text-red-600 text-sm">
-                <AlertCircle className="h-4 w-4" />
-                {fileError}
-              </div>
-            )}
-
-            {fileResult && (
-              <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-medium">
-                    Results for {fileResult.filename}
-                  </h4>
-                  <Badge variant="outline">{fileResult.file_type}</Badge>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Original:</span>
-                    <div className="font-medium">
-                      {fileResult.original_text_length} chars
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Cleaned:</span>
-                    <div className="font-medium">
-                      {fileResult.cleaned_text_length} chars
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Summary:</span>
-                    <div className="font-medium">
-                      {fileResult.summary_length} chars
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Method:</span>
-                    <div className="font-medium">
-                      {fileResult.processing_method}
-                    </div>
-                  </div>
-                </div>
-
-                {fileResult.summary && (
-                  <div className="space-y-2">
-                    <Label>Generated Summary</Label>
-                    <div className="p-3 bg-background border rounded-md text-sm">
-                      {fileResult.summary}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Text Input Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Text Summarization</CardTitle>
-            <CardDescription>
-              Enter text directly to generate a summary
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="text">Input Text</Label>
-              <Textarea
-                id="text"
-                placeholder="Enter your text here..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                className="min-h-[120px]"
-              />
-            </div>
-
-            <Button
-              onClick={handleTextSummarization}
-              disabled={!inputText.trim() || isProcessing}
-              className="w-full"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Generating Summary...
-                </>
-              ) : (
-                <>
-                  <FileText className="h-4 w-4 mr-2" />
-                  Generate Summary
-                </>
-              )}
-            </Button>
-
-            {error && (
-              <div className="flex items-center gap-2 text-red-600 text-sm">
-                <AlertCircle className="h-4 w-4" />
-                {error}
-              </div>
-            )}
-
-            {summary && (
-              <div className="space-y-2">
-                <Label>Generated Summary</Label>
-                <div className="p-3 bg-muted border rounded-md">
-                  {summary.summary}
-                </div>
-                {summary.processing_time && (
-                  <div className="text-sm text-muted-foreground">
-                    Processing time: {summary.processing_time}ms
-                  </div>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </div>
     </GlobalLayout>
   );

@@ -1,18 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User, apiService } from '@/lib/api';
-
-interface AuthState {
-  user: User | null;
-  token: string | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
-  logout: () => void;
-  setLoading: (loading: boolean) => void;
-  initialize: () => void;
-}
+import { apiService } from '@/lib/api';
+import { AuthState } from '@/types/auth';
 
 export const useAuthStore = create<AuthState>()(
   persist(

@@ -1,38 +1,7 @@
-// API Configuration - you can change this to match your backend URL
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { ApiResponse, AuthResponse, LoginRequest, RegisterRequest, User } from "@/types/auth";
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api';
 
-export interface AuthResponse {
-  user: User;
-  token: string;
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  data?: T;
-  message?: string;
-  error?: string;
-}
-
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface RegisterRequest {
-  email: string;
-  name: string;
-  password: string;
-}
-
-// Helper function to check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
 
 class ApiService {
@@ -56,7 +25,6 @@ class ApiService {
       ...options,
     };
 
-    // Add auth token if available (only in browser)
     if (isBrowser) {
       const token = localStorage.getItem('authToken');
       if (token) {
@@ -91,7 +59,6 @@ class ApiService {
     });
 
     if (response.success && response.data && isBrowser) {
-      // Store token in localStorage (only in browser)
       localStorage.setItem('authToken', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
     }
@@ -107,7 +74,6 @@ class ApiService {
     });
 
     if (response.success && response.data && isBrowser) {
-      // Store token in localStorage (only in browser)
       localStorage.setItem('authToken', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
     }

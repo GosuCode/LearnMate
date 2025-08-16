@@ -104,7 +104,7 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
               <Link key={item.name} href={item.href}>
                 <Button
                   variant="ghost"
-                  className={`w-full justify-start h-10 ${
+                  className={`w-full justify-start h-10 cursor-pointer ${
                     sidebarCollapsed ? "px-2" : "px-3"
                   }`}
                 >

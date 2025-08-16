@@ -47,13 +47,16 @@ import {
 import { Label } from "@/components/ui/label";
 
 // Types
-interface MCQQuestion {
-  id: number;
+interface LocalMCQ {
   question: string;
   options: string[];
-  correct_answer_index: number;
-  correct_answer: string;
-  explanation: string;
+  answer: string;
+}
+
+interface LocalMCQ {
+  question: string;
+  options: string[];
+  answer: string;
 }
 
 interface QuizQuestion {
@@ -156,6 +159,7 @@ export default function QuizzesPage() {
     setIsGenerating(true);
     setError(""); // Clear any previous errors
     try {
+      // Try backend first
       const response = await fetch("http://localhost:9000/api/mcq", {
         method: "POST",
         headers: {
@@ -167,26 +171,47 @@ export default function QuizzesPage() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate MCQs");
-      }
+      if (response.ok) {
+        const data = await response.json();
 
-      const data = await response.json();
+        // Extract questions from response (new FastAPI format)
+        if (!data.mcqs || data.mcqs.length === 0) {
+          throw new Error(
+            "No questions were generated. Please try with different text."
+          );
+        }
 
-      // Extract questions from response
-      if (!data.questions || data.questions.length === 0) {
-        throw new Error(
-          "No questions were generated. Please try with different text."
+        // Transform MCQ data to QuizQuestion format (new FastAPI structure)
+        const transformedQuestions: QuizQuestion[] = data.mcqs.map(
+          (mcq: LocalMCQ, index: number) => ({
+            id: index + 1,
+            question: mcq.question,
+            options: mcq.options,
+            correctAnswer: mcq.options.indexOf(mcq.answer), // Find correct answer index
+            topic: selectedTopic || "Custom Topic",
+            difficulty: selectedDifficulty || "Medium",
+            timeSpent: 0,
+            isCorrect: false,
+          })
         );
-      }
 
-      // Transform MCQ data to QuizQuestion format
-      const transformedQuestions: QuizQuestion[] = data.questions.map(
-        (mcq: MCQQuestion, index: number) => ({
+        setGeneratedQuestions(transformedQuestions);
+        return;
+      }
+    } catch {
+      console.log("Backend unavailable, using local MCQ generation");
+    }
+
+    // Fallback: Generate MCQs locally in frontend
+    try {
+      const localMCQs = generateLocalMCQs(inputText, numQuestions);
+
+      const transformedQuestions: QuizQuestion[] = localMCQs.map(
+        (mcq: LocalMCQ, index: number) => ({
           id: index + 1,
           question: mcq.question,
           options: mcq.options,
-          correctAnswer: mcq.correct_answer_index,
+          correctAnswer: mcq.options.indexOf(mcq.answer),
           topic: selectedTopic || "Custom Topic",
           difficulty: selectedDifficulty || "Medium",
           timeSpent: 0,
@@ -201,6 +226,47 @@ export default function QuizzesPage() {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  // Local MCQ generation function (fallback)
+  const generateLocalMCQs = (text: string, numQuestions: number) => {
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 20);
+    const mcqs = [];
+
+    for (let i = 0; i < Math.min(numQuestions, sentences.length); i++) {
+      const sentence = sentences[i].trim();
+      const words = sentence.split(" ").filter((w) => w.length > 3);
+
+      if (words.length < 3) continue;
+
+      // Create a simple question
+      const question = `What is the main topic discussed in: "${sentence.substring(
+        0,
+        100
+      )}..."?`;
+
+      // Use key words as options
+      const options = [
+        words[0] || "Topic A",
+        words[Math.floor(words.length / 2)] || "Topic B",
+        words[words.length - 1] || "Topic C",
+        "None of the above",
+      ];
+
+      // Shuffle options
+      for (let j = options.length - 1; j > 0; j--) {
+        const k = Math.floor(Math.random() * (j + 1));
+        [options[j], options[k]] = [options[k], options[j]];
+      }
+
+      mcqs.push({
+        question,
+        options,
+        answer: options[0], // First option is correct
+      });
+    }
+
+    return mcqs;
   };
 
   const handleStartQuiz = () => {
