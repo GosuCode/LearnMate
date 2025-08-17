@@ -50,9 +50,12 @@ class MCQApiService {
 
   // Generate MCQs from text
   async generateMCQs(data: MCQGenerationRequest): Promise<MCQGenerationResponse> {
-    return this.request<MCQGenerationResponse>('/mcq/generate', {
+    return this.request<MCQGenerationResponse>('/mcq', {
       method: 'POST',
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        text: data.text,
+        num_questions: data.num_questions
+      }),
     });
   }
 

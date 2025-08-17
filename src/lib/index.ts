@@ -3,3 +3,4 @@ export { apiService } from './api';
 export { summarizerApi } from './summarizerApi';
 export { courseApi } from './courseApi';
 export { mcqApi } from './mcqApi';
+export { flashcardApi } from './flashcardApi';

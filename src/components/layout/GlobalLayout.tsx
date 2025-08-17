@@ -37,6 +37,7 @@ const navigationItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Subjects & Materials", href: "/subjects", icon: BookOpen },
   { name: "Quizzes", href: "/quizzes", icon: FileText },
+  { name: "Flashcards", href: "/flashcards", icon: BookOpen },
   { name: "Summarizer", href: "/summarizer", icon: Brain },
   { name: "Past Papers", href: "/past-papers", icon: GraduationCap },
   { name: "Progress", href: "/progress", icon: TrendingUp },

@@ -69,7 +69,7 @@ const defaultPreferences: UserPreferences = {
 
 export const usePreferencesStore = create<PreferencesState>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             preferences: defaultPreferences,
             isLoading: false,
             error: null,

@@ -5,19 +5,21 @@ export interface MCQGenerationRequest {
 }
 
 export interface MCQQuestion {
-    id: string;
+    id?: string;
     question: string;
     options: string[];
-    correct_answer: number;
+    correct_answer_index: number;
+    answer?: string;
     explanation?: string;
     difficulty?: 'easy' | 'medium' | 'hard';
 }
 
 export interface MCQGenerationResponse {
-    questions: MCQQuestion[];
+    mcqs: MCQQuestion[];
     total_questions: number;
-    processing_time?: number;
-    model_used: string;
+    text_length: number;
+    processing_method: string;
+    service?: string;
 }
 
 export interface MCQQuiz {

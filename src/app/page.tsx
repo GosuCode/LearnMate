@@ -11,8 +11,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Navigation } from "@/components/ui/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { Navigation } from "@/components/navigation/navigation";
 
 export default function HomePage() {
   const { user, isLoading } = useAuthStore();
@@ -37,6 +37,7 @@ export default function HomePage() {
   if (user) {
     return null;
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navigation />
@@ -64,13 +65,13 @@ export default function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-4">
+      <section id="features" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
             Powerful Features for Better Learning
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -87,7 +88,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
@@ -105,7 +106,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -121,25 +122,114 @@ export default function HomePage() {
                 </CardDescription>
               </CardContent>
             </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <span className="text-orange-600 font-bold">🃏</span>
+                  </div>
+                  Interactive Flashcards
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  Generate interactive question-answer pairs for focused study
+                  sessions and better retention of key concepts.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            How LearnMate Works
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-bold">1</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Upload Content</h3>
+              <p className="text-gray-600">
+                Upload your notes, articles, or textbook content in various
+                formats.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-bold">2</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">AI Processing</h3>
+              <p className="text-gray-600">
+                Our AI analyzes and processes your content to extract key
+                information.
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-white text-2xl font-bold">3</span>
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Study Materials</h3>
+              <p className="text-gray-600">
+                Get summaries, quizzes, and flashcards ready for effective
+                studying.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-indigo-600">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold text-white mb-4">
             Ready to Transform Your Learning?
           </h2>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-lg text-blue-100 mb-8">
             Join thousands of students who are already studying smarter with
-            LearnMate.
+            LearnMate. Start your free trial today!
           </p>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700" asChild>
+          <Button
+            size="lg"
+            className="bg-white text-blue-600 hover:bg-gray-100"
+            asChild
+          >
             <Link href="/auth/register">Start Learning Today</Link>
           </Button>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="text-2xl font-bold text-blue-400 mb-4">LearnMate</div>
+          <p className="text-gray-400 mb-6">
+            Empowering students to study smarter with AI-powered learning tools.
+          </p>
+          <div className="flex justify-center space-x-6 text-sm text-gray-400">
+            <Link
+              href="/privacy"
+              className="hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms of Service
+            </Link>
+            <Link
+              href="/contact"
+              className="hover:text-white transition-colors"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

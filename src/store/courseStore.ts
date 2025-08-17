@@ -67,7 +67,7 @@ interface CourseState {
     reset: () => void;
 }
 
-export const useCourseStore = create<CourseState>((set, get) => ({
+export const useCourseStore = create<CourseState>((set) => ({
     // Initial state
     subjects: [],
     semesters: [],
