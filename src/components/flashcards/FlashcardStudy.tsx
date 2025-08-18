@@ -25,6 +25,7 @@ const FlashcardStudy = ({
   flashcards,
   currentFlashcard,
   setFlashcardSession,
+  onSelectConfidence,
 }: FlashcardStudyProps) => {
   const [isFlipping, setIsFlipping] = useState(false);
   const [confidence, setConfidence] = useState<
@@ -115,7 +116,7 @@ const FlashcardStudy = ({
                       Question
                     </h2>
                     <p className="text-xl leading-relaxed text-foreground font-medium">
-                      {currentFlashcard.question}
+                      {currentFlashcard.front}
                     </p>
                     <div className="pt-4">
                       <Button
@@ -143,7 +144,7 @@ const FlashcardStudy = ({
                       Answer
                     </h3>
                     <p className="text-xl leading-relaxed text-foreground font-medium">
-                      {currentFlashcard.answer}
+                      {currentFlashcard.back}
                     </p>
 
                     <div className="pt-6 space-y-4">
@@ -152,9 +153,12 @@ const FlashcardStudy = ({
                       </p>
                       <div className="flex justify-center gap-3">
                         <Button
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
                             setConfidence("hard");
+                            if (onSelectConfidence) {
+                              await onSelectConfidence("hard");
+                            }
                           }}
                           variant={
                             confidence === "hard" ? "default" : "outline"
@@ -166,9 +170,12 @@ const FlashcardStudy = ({
                           Hard
                         </Button>
                         <Button
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
                             setConfidence("medium");
+                            if (onSelectConfidence) {
+                              await onSelectConfidence("medium");
+                            }
                           }}
                           variant={
                             confidence === "medium" ? "default" : "outline"
@@ -179,9 +186,12 @@ const FlashcardStudy = ({
                           Medium
                         </Button>
                         <Button
-                          onClick={(e) => {
+                          onClick={async (e) => {
                             e.stopPropagation();
                             setConfidence("easy");
+                            if (onSelectConfidence) {
+                              await onSelectConfidence("easy");
+                            }
                           }}
                           variant={
                             confidence === "easy" ? "default" : "outline"
@@ -198,7 +208,7 @@ const FlashcardStudy = ({
                         <Button
                           onClick={(e) => {
                             e.stopPropagation();
-                            copyToClipboard(currentFlashcard.answer);
+                            copyToClipboard(currentFlashcard.back);
                           }}
                           variant="ghost"
                           size="sm"

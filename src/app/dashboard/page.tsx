@@ -6,20 +6,6 @@ import RecentActivity from "@/components/dashboard/RecentActivity";
 import ProgressSummaryCard from "@/components/dashboard/ProgressSummaryCard";
 
 export default function DashboardPage() {
-  // Mock data
-  const progressData = {
-    syllabusCompleted: 68,
-    quizzesTaken: 24,
-    upcomingDeadlines: [
-      {
-        title: "Data Structures Assignment",
-        date: "Dec 15, 2024",
-        type: "Assignment",
-      },
-      { title: "Java OOP Quiz", date: "Dec 18, 2024", type: "Quiz" },
-    ],
-  };
-
   return (
     <GlobalLayout>
       <div className="space-y-6">
@@ -35,7 +21,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Progress Summary Cards */}
-        <ProgressSummaryCard progressData={progressData} />
+        <ProgressSummaryCard />
 
         {/* Quick Actions */}
         <QuickActions />

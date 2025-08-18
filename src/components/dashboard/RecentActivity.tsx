@@ -6,13 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import {
-  BookOpen,
-  CheckCircle,
-  FileText,
-  Lightbulb,
-  Upload,
-} from "lucide-react";
+import { BookOpen, CheckCircle, Lightbulb, Upload } from "lucide-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Target } from "lucide-react";
 
@@ -41,12 +35,6 @@ const RecentActivity = () => {
       item: "Database Design Course",
       time: "2 days ago",
       icon: Target,
-    },
-    {
-      action: "Reviewed",
-      item: "Python Basics",
-      time: "3 days ago",
-      icon: FileText,
     },
   ];
 

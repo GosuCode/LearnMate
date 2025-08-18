@@ -6,7 +6,13 @@ import {
     MCQGenerationResponse,
     FlashcardSet,
     CreateFlashcardSetRequest,
-    UpdateFlashcardSetRequest
+    UpdateFlashcardSetRequest,
+    UserFlashcardsResponse,
+    CreateFlashcardRequest,
+    CreateFlashcardResponse,
+    DueFlashcardsResponse,
+    ReviewResponse,
+    FlashcardStatsResponse
 } from '@/types/flashcard';
 
 class FlashcardApiService {
@@ -30,7 +36,6 @@ class FlashcardApiService {
             ...options,
         };
 
-        // Add auth token if available
         const token = apiService.getToken();
         if (token) {
             config.headers = {
@@ -56,15 +61,26 @@ class FlashcardApiService {
         }
     }
 
-    // Generate flashcards from text
-    async generateFlashcards(data: FlashcardGenerationRequest): Promise<FlashcardGenerationResponse> {
+    async generateFlashcards(data: Omit<FlashcardGenerationRequest, 'userId'>): Promise<FlashcardGenerationResponse> {
+
+        const token = apiService.getToken();
+        const user = apiService.getUser();
+
+        if (!token || !user?.id) {
+            throw new Error('Authentication required. Please log in to generate flashcards.');
+        }
+
+        const requestData = {
+            ...data,
+            userId: user.id
+        };
+
         return this.request<FlashcardGenerationResponse>('/flashcards/flashcards', {
             method: 'POST',
-            body: JSON.stringify(data),
+            body: JSON.stringify(requestData),
         });
     }
 
-    // Generate MCQs from text
     async generateMCQs(data: MCQGenerationRequest): Promise<MCQGenerationResponse> {
         return this.request<MCQGenerationResponse>('/flashcards/mcqs', {
             method: 'POST',
@@ -72,7 +88,6 @@ class FlashcardApiService {
         });
     }
 
-    // Flashcard set management
     async getFlashcardSets(): Promise<FlashcardSet[]> {
         return this.request<FlashcardSet[]>('/flashcards/sets');
     }
@@ -101,25 +116,61 @@ class FlashcardApiService {
         });
     }
 
-    // Get flashcard sets by subject
     async getFlashcardSetsBySubject(subjectId: string): Promise<FlashcardSet[]> {
         return this.request<FlashcardSet[]>(`/subjects/${subjectId}/flashcards`);
     }
 
-    // Search flashcard sets
     async searchFlashcardSets(query: string): Promise<FlashcardSet[]> {
         return this.request<FlashcardSet[]>(`/flashcards/sets/search?q=${encodeURIComponent(query)}`);
     }
 
-      // Health check
-  async checkHealth(): Promise<{
-    status: string;
-    service: string;
-    flashcard_generator_ready: boolean;
-    mcq_generator_ready: boolean;
-    fastapi_service_healthy: boolean;
-    service_info: Record<string, unknown>;
-  }> {
+    async getUserFlashcards(): Promise<UserFlashcardsResponse> {
+        const token = apiService.getToken();
+        const user = apiService.getUser();
+
+        if (!token || !user?.id) {
+            throw new Error('Authentication required. Please log in to fetch flashcards.');
+        }
+
+        return this.request<UserFlashcardsResponse>('/flashcards/user-flashcards');
+    }
+
+    async createFlashcard(data: CreateFlashcardRequest): Promise<CreateFlashcardResponse> {
+        return this.request<CreateFlashcardResponse>('/flashcards/create', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async reviewFlashcard(id: string, qualityScore: number): Promise<ReviewResponse> {
+        return this.request<ReviewResponse>(`/flashcards/review/${id}`, {
+            method: 'POST',
+            body: JSON.stringify({ qualityScore }),
+        });
+    }
+
+    async getDueFlashcards(): Promise<DueFlashcardsResponse> {
+        return this.request<DueFlashcardsResponse>('/flashcards/due');
+    }
+
+    async getFlashcardStats(): Promise<FlashcardStatsResponse> {
+        return this.request<FlashcardStatsResponse>('/flashcards/stats');
+    }
+
+    async deleteFlashcard(id: string) {
+        return this.request(`/flashcards/${id}`, {
+            method: 'DELETE',
+        });
+    }
+
+    async checkHealth(): Promise<{
+        status: string;
+        service: string;
+        flashcard_generator_ready: boolean;
+        mcq_generator_ready: boolean;
+        fastapi_service_healthy: boolean;
+        service_info: Record<string, unknown>;
+    }> {
         return this.request('/flashcards/health');
     }
 }

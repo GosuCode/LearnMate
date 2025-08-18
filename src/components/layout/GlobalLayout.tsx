@@ -26,6 +26,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Home,
+  Clock,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -35,10 +36,11 @@ interface GlobalLayoutProps {
 
 const navigationItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Subjects & Materials", href: "/subjects", icon: BookOpen },
-  { name: "Quizzes", href: "/quizzes", icon: FileText },
-  { name: "Flashcards", href: "/flashcards", icon: BookOpen },
   { name: "Summarizer", href: "/summarizer", icon: Brain },
+  { name: "Flashcards", href: "/flashcards", icon: BookOpen },
+  { name: "Quizzes", href: "/quizzes", icon: FileText },
+  { name: "Spaced Repetition", href: "/spaced-repetition", icon: Clock },
+  { name: "Subjects & Materials", href: "/subjects", icon: BookOpen },
   { name: "Past Papers", href: "/past-papers", icon: GraduationCap },
   { name: "Progress", href: "/progress", icon: TrendingUp },
   { name: "Settings", href: "/settings", icon: Settings },

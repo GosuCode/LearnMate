@@ -20,21 +20,29 @@ const QuickActions = () => {
       <CardContent>
         <div className="flex flex-col sm:flex-row gap-4">
           <Link href="/summarizer" className="flex-1">
-            <Button className="w-full h-12" size="lg">
+            <Button className="w-full h-12 cursor-pointer" size="lg">
               <Upload className="mr-2 h-5 w-5" />
               Summarize Notes
             </Button>
           </Link>
           <Link href="/quizzes" className="flex-1">
-            <Button className="w-full h-12" variant="outline" size="lg">
+            <Button
+              className="w-full h-12 cursor-pointer"
+              variant="outline"
+              size="lg"
+            >
               <FileText className="mr-2 h-5 w-5" />
               Start Quiz
             </Button>
           </Link>
-          <Link href="/recommended-topics" className="flex-1">
-            <Button className="w-full h-12" variant="outline" size="lg">
+          <Link href="/flashcards" className="flex-1">
+            <Button
+              className="w-full h-12 cursor-pointer"
+              variant="outline"
+              size="lg"
+            >
               <TrendingUp className="mr-2 h-5 w-5" />
-              View Recommended Topics
+              Flashcards
             </Button>
           </Link>
         </div>

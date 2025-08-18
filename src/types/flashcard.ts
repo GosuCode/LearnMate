@@ -1,6 +1,7 @@
 export interface FlashcardGenerationRequest {
     text: string;
     total_questions: number;
+    userId?: string; // Optional since it's handled automatically by the API
 }
 
 export interface Flashcard {
@@ -34,6 +35,86 @@ export interface MCQGenerationResponse {
     total_mcqs: number;
     text_length: number;
     processing_method: string;
+}
+
+// SM2 Spaced Repetition Types
+export interface SM2Flashcard {
+    id: string;
+    front: string;
+    back: string;
+    easeFactor: number;
+    interval: number;
+    repetition: number;
+    lastReviewed: string;
+    nextReview: string;
+}
+
+// Database Flashcard with full SM2 data
+export interface DatabaseFlashcard {
+    id: string;
+    front: string;
+    back: string;
+    easeFactor: number;
+    interval: number;
+    repetition: number;
+    lastReviewed: string;
+    nextReview: string;
+    userId: string;
+    contentId?: string;
+    createdAt: string;
+    updatedAt: string;
+    content?: {
+        id: string;
+        title: string;
+        type: string;
+    };
+}
+
+export interface UserFlashcardsResponse {
+    success: boolean;
+    data: DatabaseFlashcard[];
+    total: number;
+    error: string | null;
+}
+
+export interface ReviewRequest {
+    qualityScore: number;
+}
+
+export interface ReviewResponse {
+    success: boolean;
+    data: SM2Flashcard | null;
+    error: string | null;
+}
+
+export interface DueFlashcardsResponse {
+    success: boolean;
+    data: SM2Flashcard[];
+    error: string | null;
+}
+
+export interface FlashcardStats {
+    totalCards: number;
+    dueCards: number;
+    averageEaseFactor: number;
+}
+
+export interface FlashcardStatsResponse {
+    success: boolean;
+    data: FlashcardStats | null;
+    error: string | null;
+}
+
+export interface CreateFlashcardRequest {
+    front: string;
+    back: string;
+    contentId?: string;
+}
+
+export interface CreateFlashcardResponse {
+    success: boolean;
+    data: SM2Flashcard | null;
+    error: string | null;
 }
 
 export interface FlashcardSet {
@@ -73,9 +154,10 @@ export interface FlashcardStudyProps {
     resetSession: () => void;
     copyToClipboard: (text: string) => void;
     flashcardSession: StudySession;
-    flashcards: Flashcard[];
-    currentFlashcard: Flashcard;
+    flashcards: DatabaseFlashcard[];
+    currentFlashcard: DatabaseFlashcard;
     setFlashcardSession: (session: StudySession) => void;
+    onSelectConfidence?: (level: "easy" | "medium" | "hard") => Promise<void> | void;
 }
 
 export interface FlashcardFormProps {
@@ -87,4 +169,15 @@ export interface FlashcardFormProps {
     isGenerating: boolean;
     error: string;
     setError: (error: string) => void;
+}
+
+export interface FlashcardListProps {
+    userFlashcards: DatabaseFlashcard[];
+    isLoadingUserFlashcards: boolean;
+    currentPage: number;
+    setCurrentPage: (page: number | ((prev: number) => number)) => void;
+    totalPages: number;
+    fetchUserFlashcards: () => void;
+    currentFlashcards: DatabaseFlashcard[];
+    onStartStudy: (id: string) => void;
 }
