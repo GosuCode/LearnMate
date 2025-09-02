@@ -21,7 +21,7 @@ export default function SummarizerPage() {
   );
   const [isFileProcessing, setIsFileProcessing] = useState(false);
   const [fileError, setFileError] = useState<string>("");
-  const [maxLength, setMaxLength] = useState(150);
+  const [wordCount, setWordCount] = useState(100);
   const [chunkSize, setChunkSize] = useState(1000);
   const [copiedText, setCopiedText] = useState<string>("");
 
@@ -34,7 +34,7 @@ export default function SummarizerPage() {
     try {
       const data = await summarizerApi.summarizeText({
         text: inputText,
-        max_length: 150,
+        word_count: wordCount,
       });
       setSummary(data);
     } catch (error) {
@@ -79,7 +79,7 @@ export default function SummarizerPage() {
     try {
       const data = await summarizerApi.summarizeFile({
         file: selectedFile,
-        max_length: maxLength,
+        word_count: wordCount,
         chunk_size: chunkSize,
       });
       setFileResult(data);
@@ -133,8 +133,8 @@ export default function SummarizerPage() {
                 <SummarizeFileUpload
                   handleFileUpload={handleFileUpload}
                   selectedFile={selectedFile}
-                  maxLength={maxLength}
-                  setMaxLength={setMaxLength}
+                  wordCount={wordCount}
+                  setWordCount={setWordCount}
                   chunkSize={chunkSize}
                   setChunkSize={setChunkSize}
                   handleFileProcessing={handleFileProcessing}
@@ -150,6 +150,8 @@ export default function SummarizerPage() {
                 <SummarizeText
                   inputText={inputText}
                   setInputText={setInputText}
+                  wordCount={wordCount}
+                  setWordCount={setWordCount}
                   handleTextSummarization={handleTextSummarization}
                   isProcessing={isProcessing}
                   error={error}

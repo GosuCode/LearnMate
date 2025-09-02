@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   FileText,
   Loader2,
@@ -17,12 +18,15 @@ import {
   Clock,
   Copy,
   Check,
+  BarChart3,
 } from "lucide-react";
 import { SummarizeTextProps } from "@/types/Summarize";
 
 const SummarizeText = ({
   inputText,
   setInputText,
+  wordCount,
+  setWordCount,
   handleTextSummarization,
   isProcessing,
   error,
@@ -59,6 +63,28 @@ const SummarizeText = ({
             <span>{inputText.length.toLocaleString()} characters</span>
             <span>Recommended: 500+ characters for best results</span>
           </div>
+        </div>
+
+        <div className="space-y-3">
+          <Label
+            htmlFor="wordCount"
+            className="text-sm font-medium flex items-center gap-2"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Target Word Count
+          </Label>
+          <Input
+            id="wordCount"
+            type="number"
+            min="50"
+            max="500"
+            value={wordCount}
+            onChange={(e) => setWordCount(Number.parseInt(e.target.value))}
+            className="transition-colors focus:ring-2 focus:ring-primary/20"
+          />
+          <p className="text-xs text-muted-foreground">
+            Target words in summary (50-500)
+          </p>
         </div>
 
         <Button

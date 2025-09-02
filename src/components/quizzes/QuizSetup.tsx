@@ -106,7 +106,7 @@ export function QuizSetup({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="difficulty">Difficulty Level</Label>
               <Select
                 value={selectedDifficulty}
@@ -134,7 +134,7 @@ export function QuizSetup({
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </div> */}
 
             <div className="space-y-2">
               <Label htmlFor="questions">Number of Questions</Label>

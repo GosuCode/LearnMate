@@ -54,12 +54,12 @@ const ProgressSummaryCard = () => {
     return Math.max(0, Math.min(100, Math.round((1 - dueRatio) * 100)));
   };
 
-  const getAverageScore = () => {
-    if (!stats || stats.totalCards === 0) return 0;
-    // Calculate average score based on ease factor (0.1 to 2.5, where 2.5 is perfect)
-    const normalizedScore = (stats.averageEaseFactor - 0.1) / (2.5 - 0.1);
-    return Math.round(normalizedScore * 100);
-  };
+  // const getAverageScore = () => {
+  //   if (!stats || stats.totalCards === 0) return 0;
+  //   // Calculate average score based on ease factor (0.1 to 2.5, where 2.5 is perfect)
+  //   const normalizedScore = (stats.averageEaseFactor - 0.1) / (2.5 - 0.1);
+  //   return Math.round(normalizedScore * 100);
+  // };
 
   if (isLoading) {
     return (
@@ -119,13 +119,15 @@ const ProgressSummaryCard = () => {
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-2xl font-bold text-foreground">
-                {getAverageScore()}%
+                {/* {getAverageScore()} */}
+                0.00%
               </span>
               <TrendingUp className="h-5 w-5 text-green-600" />
             </div>
             <p className="text-sm text-muted-foreground">
               Average ease factor:{" "}
-              {stats?.averageEaseFactor?.toFixed(2) || "0.00"}
+              {/* {stats?.averageEaseFactor?.toFixed(2) || "0.00"} */}
+              0.00
             </p>
             <p className="text-xs text-muted-foreground">
               Total cards: {stats?.totalCards || 0}

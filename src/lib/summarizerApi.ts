@@ -22,7 +22,6 @@ class SummarizerApiService {
       ...options,
     };
 
-    // Add auth token if available
     const token = apiService.getToken();
     if (token) {
       config.headers = {
@@ -48,7 +47,6 @@ class SummarizerApiService {
     }
   }
 
-  // Text summarization
   async summarizeText(data: SummarizationRequest): Promise<SummarizationResponse> {
     return this.request<SummarizationResponse>('/summarize', {
       method: 'POST',
@@ -56,11 +54,10 @@ class SummarizerApiService {
     });
   }
 
-  // File summarization
   async summarizeFile(data: FileSummarizationRequest): Promise<FileProcessingResult> {
     const formData = new FormData();
     formData.append('file', data.file);
-    formData.append('max_length', data.max_length.toString());
+    formData.append('word_count', data.word_count.toString());
     formData.append('chunk_size', data.chunk_size.toString());
 
     const url = `${this.baseURL}/files/upload-and-summarize`;
@@ -93,7 +90,6 @@ class SummarizerApiService {
     }
   }
 
-  // Extract text from file (without summarization)
   async extractText(file: File): Promise<FileProcessingResult> {
     const formData = new FormData();
     formData.append('file', file);
@@ -128,7 +124,6 @@ class SummarizerApiService {
     }
   }
 
-  // Get supported file formats
   async getSupportedFormats(): Promise<{
     supported_formats: string[];
     max_file_size: string;

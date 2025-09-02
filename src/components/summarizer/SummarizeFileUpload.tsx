@@ -28,8 +28,8 @@ import { FileUploadProps } from "@/types/Summarize";
 const SummarizeFileUpload = ({
   handleFileUpload,
   selectedFile,
-  maxLength,
-  setMaxLength,
+  wordCount,
+  setWordCount,
   chunkSize,
   setChunkSize,
   handleFileProcessing,
@@ -86,23 +86,23 @@ const SummarizeFileUpload = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-3">
             <Label
-              htmlFor="maxLength"
+              htmlFor="wordCount"
               className="text-sm font-medium flex items-center gap-2"
             >
               <BarChart3 className="h-4 w-4" />
-              Summary Length
+              Target Word Count
             </Label>
             <Input
-              id="maxLength"
+              id="wordCount"
               type="number"
               min="50"
               max="500"
-              value={maxLength}
-              onChange={(e) => setMaxLength(Number.parseInt(e.target.value))}
+              value={wordCount}
+              onChange={(e) => setWordCount(Number.parseInt(e.target.value))}
               className="transition-colors focus:ring-2 focus:ring-primary/20"
             />
             <p className="text-xs text-muted-foreground">
-              Characters in summary (50-500)
+              Target words in summary (50-500)
             </p>
           </div>
           <div className="space-y-3">

@@ -1,8 +1,8 @@
 export interface FileUploadProps {
     handleFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
     selectedFile: File | null;
-    maxLength: number;
-    setMaxLength: (value: number) => void;
+    wordCount: number;
+    setWordCount: (value: number) => void;
     chunkSize: number;
     setChunkSize: (value: number) => void;
     handleFileProcessing: () => void;
@@ -20,7 +20,7 @@ export interface FileProcessingResult {
     cleaned_text_length: number;
     summary: string;
     summary_length: number;
-    max_length: number;
+    word_count: number;
     chunk_size: number;
     processing_method: string;
 }
@@ -33,6 +33,8 @@ export interface SummarizationResult {
 export interface SummarizeTextProps {
     inputText: string;
     setInputText: (value: string) => void;
+    wordCount: number;
+    setWordCount: (value: number) => void;
     handleTextSummarization: () => void;
     isProcessing: boolean;
     error: string;
@@ -44,7 +46,7 @@ export interface SummarizeTextProps {
 
 export interface SummarizationRequest {
     text: string;
-    max_length: number;
+    word_count: number;
     num_beams?: number;
 }
 
@@ -57,6 +59,6 @@ export interface SummarizationResponse {
 
 export interface FileSummarizationRequest {
     file: File;
-    max_length: number;
+    word_count: number;
     chunk_size: number;
 }
