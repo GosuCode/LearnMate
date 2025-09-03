@@ -29,6 +29,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
 
 interface GlobalLayoutProps {
   children: React.ReactNode;
@@ -52,6 +53,12 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { user, logout, isLoading } = useAuthStore();
   const [notifications] = useState(3);
+  const router = useRouter();
+
+  const signOut = () => {
+    logout();
+    router.push("/auth/login");
+  };
 
   if (isLoading) {
     return (
@@ -190,7 +197,9 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
                   <DropdownMenuItem>Account Settings</DropdownMenuItem>
                   <DropdownMenuItem>Help & Support</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>Sign Out</DropdownMenuItem>
+                  <DropdownMenuItem onClick={signOut}>
+                    Sign Out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (

@@ -101,11 +101,6 @@ export interface SavedSummary {
     };
 }
 
-export interface SaveSummaryResponse {
-    success: boolean;
-    summary: SavedSummary;
-}
-
 export interface GetSummariesResponse {
     summaries: SavedSummary[];
     pagination: {

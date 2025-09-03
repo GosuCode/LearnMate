@@ -35,7 +35,6 @@ export default function SummarizerPage() {
       const data = await summarizerApi.summarizeText({
         text: inputText,
         word_count: wordCount,
-        save: true,
       });
       setSummary(data);
     } catch (error) {

@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from "react";
 import GlobalLayout from "@/components/layout/GlobalLayout";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -36,11 +30,7 @@ export default function MySummariesPage() {
   const fetchSummaries = async () => {
     try {
       setLoading(true);
-      console.log("Fetching summaries...");
-      console.log("Auth token:", apiService.getToken());
-      console.log("Is authenticated:", apiService.isAuthenticated());
       const data = await summarizerApi.getSummaries();
-      console.log("Summaries data:", data);
       setSummaries(data.summaries);
     } catch (err) {
       console.error("Error fetching summaries:", err);
@@ -55,7 +45,6 @@ export default function MySummariesPage() {
   };
 
   useEffect(() => {
-    // Check if user is authenticated
     if (!apiService.isAuthenticated()) {
       router.push("/auth/login");
       return;
@@ -107,120 +96,154 @@ export default function MySummariesPage() {
 
   return (
     <GlobalLayout>
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-serif font-bold text-foreground tracking-tight">
-              My Summaries
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              View and manage all your saved summaries
-            </p>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl mb-4">
+                <FileText className="h-8 w-8 text-white" />
+              </div>
+              <h1 className="text-5xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 dark:from-slate-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
+                My Summaries
+              </h1>
+              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Your personal knowledge library. Search, organize, and access
+                all your saved summaries.
+              </p>
+            </div>
 
-          {/* Search */}
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search summaries..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+            {/* Search and Stats */}
+            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+              <div className="relative w-full lg:w-96">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Input
+                  placeholder="Search by title or content..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-12 h-12 text-lg border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                />
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700">
+                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    {filteredSummaries.length}{" "}
+                    {filteredSummaries.length === 1 ? "summary" : "summaries"}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Error */}
           {error && (
-            <div className="flex items-center gap-3 p-4 text-destructive bg-destructive/5 border border-destructive/20 rounded-lg">
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-              <span className="text-sm font-medium">{error}</span>
+            <div className="flex items-center gap-4 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+              <div className="flex-shrink-0 w-10 h-10 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-red-800 dark:text-red-200">
+                  Error Loading Summaries
+                </h3>
+                <p className="text-sm text-red-600 dark:text-red-300 mt-1">
+                  {error}
+                </p>
+              </div>
             </div>
           )}
 
           {/* Summaries List */}
           {filteredSummaries.length === 0 ? (
-            <div className="text-center py-12">
-              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-foreground mb-2">
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-3xl mb-6">
+                <FileText className="h-12 w-12 text-slate-400 dark:text-slate-500" />
+              </div>
+              <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
                 {searchTerm ? "No summaries found" : "No summaries yet"}
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-md mx-auto">
                 {searchTerm
-                  ? "Try adjusting your search terms"
-                  : "Generate some summaries to see them here"}
+                  ? "Try adjusting your search terms or create a new summary"
+                  : "Start by generating your first summary to build your knowledge library"}
               </p>
+              {!searchTerm && (
+                <Button
+                  onClick={() => router.push("/summarizer")}
+                  className="mt-6 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-medium"
+                >
+                  Create First Summary
+                </Button>
+              )}
             </div>
           ) : (
-            <div className="grid gap-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {filteredSummaries.map((summary) => (
-                <Card key={summary.id} className="shadow-sm border-border/50">
+                <Card
+                  key={summary.id}
+                  className="group bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 rounded-2xl overflow-hidden"
+                >
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
-                      <div className="space-y-1">
-                        <CardTitle className="text-xl font-serif line-clamp-2">
+                      <div className="space-y-3 flex-1">
+                        <CardTitle className="text-lg font-semibold text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                           {summary.title}
                         </CardTitle>
-                        <CardDescription className="flex items-center gap-4 text-sm">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
+                        <div className="flex items-center gap-3 text-sm">
+                          <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                            <Calendar className="h-4 w-4" />
                             {new Date(summary.createdAt).toLocaleDateString()}
                           </span>
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge
+                            variant="secondary"
+                            className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-0"
+                          >
                             {summary.wordCount} words
                           </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {summary.processingMethod}
-                          </Badge>
-                        </CardDescription>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5 ml-4">
                         <Button
                           onClick={() =>
                             handleCopyText(summary.summary, summary.id)
                           }
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          className="h-8 px-3 text-xs"
+                          className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                         >
                           {copiedText === summary.id ? (
-                            <>
-                              <Check className="h-3 w-3 mr-1" />
-                              Copied!
-                            </>
+                            <Check className="h-4 w-4 text-green-600" />
                           ) : (
-                            <>
-                              <Copy className="h-3 w-3 mr-1" />
-                              Copy
-                            </>
+                            <Copy className="h-4 w-4 text-slate-500" />
                           )}
                         </Button>
                         <Button
                           onClick={() => handleDelete(summary.id)}
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          className="h-8 px-3 text-xs text-destructive hover:text-destructive"
+                          className="h-8 w-8 p-0 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                         >
-                          <Trash2 className="h-3 w-3" />
+                          <Trash2 className="h-4 w-4 text-slate-500 hover:text-red-600" />
                         </Button>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="p-4 bg-muted/30 border border-border/50 rounded-lg">
-                        <h4 className="text-sm font-medium text-muted-foreground mb-2">
+                  <CardContent className="pt-0">
+                    <div className="space-y-4">
+                      <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-100 dark:border-blue-800/30 rounded-xl">
+                        <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                           Summary
                         </h4>
-                        <p className="text-sm leading-relaxed line-clamp-4">
+                        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300 line-clamp-4">
                           {summary.summary}
                         </p>
                       </div>
-                      <div className="p-3 bg-muted/20 border border-border/30 rounded-lg">
-                        <h4 className="text-xs font-medium text-muted-foreground mb-1">
+                      <div className="p-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-lg">
+                        <h4 className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2 flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
                           Original Text
                         </h4>
-                        <p className="text-xs text-muted-foreground line-clamp-2">
+                        <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
                           {summary.originalText}
                         </p>
                       </div>

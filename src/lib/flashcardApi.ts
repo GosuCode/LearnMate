@@ -162,17 +162,6 @@ class FlashcardApiService {
             method: 'DELETE',
         });
     }
-
-    async checkHealth(): Promise<{
-        status: string;
-        service: string;
-        flashcard_generator_ready: boolean;
-        mcq_generator_ready: boolean;
-        fastapi_service_healthy: boolean;
-        service_info: Record<string, unknown>;
-    }> {
-        return this.request('/flashcards/health');
-    }
 }
 
 export const flashcardApi = new FlashcardApiService();

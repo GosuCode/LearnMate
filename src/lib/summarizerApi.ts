@@ -1,5 +1,5 @@
 import { apiService } from './api';
-import { SummarizationRequest, SummarizationResponse, FileSummarizationRequest, FileProcessingResult, SaveSummaryResponse, GetSummariesResponse, SavedSummary } from '@/types/Summarize';
+import { SummarizationRequest, SummarizationResponse, FileSummarizationRequest, FileProcessingResult, GetSummariesResponse, SavedSummary } from '@/types/Summarize';
 
 class SummarizerApiService {
   private baseURL: string;
@@ -47,21 +47,8 @@ class SummarizerApiService {
     }
   }
 
-  async summarizeText(data: SummarizationRequest & { save?: boolean; title?: string }): Promise<SummarizationResponse> {
+  async summarizeText(data: SummarizationRequest & { title?: string }): Promise<SummarizationResponse> {
     return this.request<SummarizationResponse>('/summarize', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-  }
-
-  async saveSummary(data: {
-    title: string;
-    originalText: string;
-    summary: string;
-    wordCount: number;
-    processingMethod: string;
-  }): Promise<SaveSummaryResponse> {
-    return this.request('/summarize/save', {
       method: 'POST',
       body: JSON.stringify(data),
     });
