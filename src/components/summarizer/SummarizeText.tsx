@@ -58,11 +58,37 @@ const SummarizeText = ({
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
             className="min-h-[150px] resize-none transition-colors focus:ring-2 focus:ring-primary/20"
+            minLength={1000}
           />
-          <div className="flex justify-between items-center text-xs text-muted-foreground">
-            <span>{inputText.length.toLocaleString()} characters</span>
-            <span>Recommended: 500+ characters for best results</span>
+          <div className="flex justify-between items-center text-xs">
+            <span
+              className={
+                inputText.length < 1000
+                  ? "text-destructive"
+                  : "text-muted-foreground"
+              }
+            >
+              {inputText.length.toLocaleString()} characters
+            </span>
+            <span
+              className={
+                inputText.length < 1000
+                  ? "text-destructive"
+                  : "text-muted-foreground"
+              }
+            >
+              Recommended: 1,000+ characters for best results
+            </span>
           </div>
+          {inputText.length > 0 && inputText.length < 1000 && (
+            <div className="flex items-center gap-2 text-xs text-destructive">
+              <AlertCircle className="h-3 w-3" />
+              <span>
+                Text is too short. Please provide at least 1,000 characters for
+                better summarization.
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
@@ -84,6 +110,19 @@ const SummarizeText = ({
           />
           <p className="text-xs text-muted-foreground">
             Target words in summary (50-500)
+          </p>
+        </div>
+
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800 flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            Summary will be automatically saved with an AI-generated title
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            View all your saved summaries in{" "}
+            <a href="/my-summaries" className="underline hover:no-underline">
+              My Summaries
+            </a>
           </p>
         </div>
 
@@ -148,6 +187,12 @@ const SummarizeText = ({
                     </>
                   )}
                 </Button>
+                {summary.saved && (
+                  <Badge variant="secondary" className="h-8 px-3 text-xs">
+                    <Check className="h-3 w-3 mr-1" />
+                    Saved
+                  </Badge>
+                )}
               </div>
             </div>
             <div className="p-4 bg-background border border-border rounded-lg text-sm leading-relaxed">

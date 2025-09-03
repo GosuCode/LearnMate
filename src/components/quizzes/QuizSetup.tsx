@@ -8,21 +8,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Brain, Loader2, Play, AlertTriangle } from "lucide-react";
+import { Brain, Loader2, Play, AlertTriangle, AlertCircle } from "lucide-react";
 import { useQuizGenerator } from "@/hooks/quiz/use-quiz-generator";
 import type { QuizQuestion } from "@/hooks/quiz/use-quiz";
-
-const difficulties = ["Easy", "Medium", "Hard"];
 
 interface QuizSetupProps {
   onQuestionsGenerated: (questions: QuizQuestion[]) => void;
@@ -39,7 +30,6 @@ export function QuizSetup({
     inputText,
     setInputText,
     selectedDifficulty,
-    setSelectedDifficulty,
     numQuestions,
     setNumQuestions,
     isGenerating,
@@ -53,7 +43,6 @@ export function QuizSetup({
       const questions = await generateMCQs();
       onQuestionsGenerated(questions);
     } catch (error) {
-      // Error is handled in the hook
       console.error(error);
     }
   };
@@ -65,26 +54,6 @@ export function QuizSetup({
 
   return (
     <div className="space-y-6">
-      {/* Header Card */}
-      <Card className="border-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
-        <CardContent className="pt-6">
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-              <Brain className="h-8 w-8 text-primary" />
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold">
-                AI-Powered Quiz Generation
-              </h3>
-              <p className="text-muted-foreground mt-2">
-                Transform your study material into interactive multiple choice
-                questions
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Generator Form */}
       <Card>
         <CardHeader>
@@ -102,40 +71,40 @@ export function QuizSetup({
               value={inputText}
               onChange={(e) => handleInputChange(e.target.value)}
               className="min-h-[120px] resize-none"
+              minLength={1000}
             />
+            <div className="flex justify-between items-center text-xs">
+              <span
+                className={
+                  inputText.length < 1000
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }
+              >
+                {inputText.length.toLocaleString()} characters
+              </span>
+              <span
+                className={
+                  inputText.length < 1000
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }
+              >
+                Recommended: 1,000+ characters for best results
+              </span>
+            </div>
+            {inputText.length > 0 && inputText.length < 1000 && (
+              <div className="flex items-center gap-2 text-xs text-destructive">
+                <AlertCircle className="h-3 w-3" />
+                <span>
+                  Text is too short. Please provide at least 1,000 characters
+                  for better quiz questions.
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* <div className="space-y-2">
-              <Label htmlFor="difficulty">Difficulty Level</Label>
-              <Select
-                value={selectedDifficulty}
-                onValueChange={setSelectedDifficulty}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select difficulty" />
-                </SelectTrigger>
-                <SelectContent>
-                  {difficulties.map((difficulty) => (
-                    <SelectItem key={difficulty} value={difficulty}>
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            difficulty === "Easy"
-                              ? "bg-green-500"
-                              : difficulty === "Medium"
-                              ? "bg-yellow-500"
-                              : "bg-red-500"
-                          }`}
-                        />
-                        {difficulty}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div> */}
-
             <div className="space-y-2">
               <Label htmlFor="questions">Number of Questions</Label>
               <Input
@@ -149,6 +118,19 @@ export function QuizSetup({
                 }
               />
             </div>
+          </div>
+
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              Quiz will be automatically saved with an AI-generated title
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              View all your saved quizzes in{" "}
+              <a href="/my-quizzes" className="underline hover:no-underline">
+                My Quizzes
+              </a>
+            </p>
           </div>
 
           <Button

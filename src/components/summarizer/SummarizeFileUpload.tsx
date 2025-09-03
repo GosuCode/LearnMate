@@ -128,6 +128,19 @@ const SummarizeFileUpload = ({
           </div>
         </div>
 
+        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-sm text-blue-800 flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            Summary will be automatically saved with an AI-generated title
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            View all your saved summaries in{" "}
+            <a href="/my-summaries" className="underline hover:no-underline">
+              My Summaries
+            </a>
+          </p>
+        </div>
+
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
             onClick={handleFileProcessing}
@@ -213,24 +226,32 @@ const SummarizeFileUpload = ({
                     <Sparkles className="h-4 w-4 text-primary" />
                     Generated Summary
                   </Label>
-                  <Button
-                    onClick={() => handleCopyText(fileResult.summary, "file")}
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-3 text-xs border-primary/20 hover:bg-primary/5"
-                  >
-                    {copiedText === "file" ? (
-                      <>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => handleCopyText(fileResult.summary, "file")}
+                      variant="outline"
+                      size="sm"
+                      className="h-8 px-3 text-xs border-primary/20 hover:bg-primary/5"
+                    >
+                      {copiedText === "file" ? (
+                        <>
+                          <Check className="h-3 w-3 mr-1" />
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </>
+                      )}
+                    </Button>
+                    {fileResult.saved && (
+                      <Badge variant="secondary" className="h-8 px-3 text-xs">
                         <Check className="h-3 w-3 mr-1" />
-                        Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="h-3 w-3 mr-1" />
-                        Copy
-                      </>
+                        Saved
+                      </Badge>
                     )}
-                  </Button>
+                  </div>
                 </div>
                 <div className="p-4 bg-background border border-border rounded-lg text-sm leading-relaxed">
                   {fileResult.summary}

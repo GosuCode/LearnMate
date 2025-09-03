@@ -1,11 +1,5 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
-import { Brain, BookOpen, Target, Sparkles, Loader2 } from "lucide-react";
+import { Card, CardContent } from "../ui/card";
+import { BookOpen, Target, Sparkles, Loader2, AlertCircle } from "lucide-react";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -23,18 +17,6 @@ const FlashcardForm = ({
 }: FlashcardFormProps) => {
   return (
     <Card className="border-2 border-border/50 shadow-xl bg-card/80 backdrop-blur-sm">
-      <CardHeader className="pb-6">
-        <CardTitle className="flex items-center gap-3 text-2xl">
-          <div className="w-10 h-10 bg-gradient-to-br from-accent to-accent/80 rounded-lg flex items-center justify-center">
-            <Brain className="h-6 w-6 text-accent-foreground" />
-          </div>
-          Generate Flashcards
-        </CardTitle>
-        <CardDescription className="text-base">
-          Input your study material and let AI create personalized flashcards
-          for effective learning
-        </CardDescription>
-      </CardHeader>
       <CardContent className="space-y-8">
         <div className="space-y-6">
           <div className="space-y-3">
@@ -54,7 +36,37 @@ const FlashcardForm = ({
                 setError("");
               }}
               className="min-h-[160px] text-base border-2 focus:border-accent/50 transition-colors"
+              minLength={1000}
             />
+            <div className="flex justify-between items-center text-xs">
+              <span
+                className={
+                  inputText.length < 1000
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }
+              >
+                {inputText.length.toLocaleString()} characters
+              </span>
+              <span
+                className={
+                  inputText.length < 1000
+                    ? "text-destructive"
+                    : "text-muted-foreground"
+                }
+              >
+                Recommended: 1,000+ characters for best results
+              </span>
+            </div>
+            {inputText.length > 0 && inputText.length < 1000 && (
+              <div className="flex items-center gap-2 text-xs text-destructive">
+                <AlertCircle className="h-3 w-3" />
+                <span>
+                  Text is too short. Please provide at least 1,000 characters
+                  for better flashcards.
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-3">

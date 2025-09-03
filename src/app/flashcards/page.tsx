@@ -225,8 +225,7 @@ export default function FlashcardsPage() {
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Transform your study material into interactive flashcards powered
-              by AI. Study smarter with spaced repetition and confidence
-              tracking.
+              by AI.
             </p>
           </div>
 

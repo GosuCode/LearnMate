@@ -23,11 +23,25 @@ export interface FileProcessingResult {
     word_count: number;
     chunk_size: number;
     processing_method: string;
+    saved?: boolean;
+    savedSummary?: {
+        id: string;
+        title: string;
+        createdAt: string;
+    };
+    saveError?: string;
 }
 
 export interface SummarizationResult {
     summary: string;
     processing_time?: number;
+    saved?: boolean;
+    savedSummary?: {
+        id: string;
+        title: string;
+        createdAt: string;
+    };
+    saveError?: string;
 }
 
 export interface SummarizeTextProps {
@@ -55,10 +69,49 @@ export interface SummarizationResponse {
     processing_time?: number;
     processing_method: string;
     model_available: boolean;
+    saved?: boolean;
+    savedSummary?: {
+        id: string;
+        title: string;
+        createdAt: string;
+    };
+    saveError?: string;
 }
 
 export interface FileSummarizationRequest {
     file: File;
     word_count: number;
     chunk_size: number;
+}
+
+export interface SavedSummary {
+    id: string;
+    title: string;
+    originalText: string;
+    summary: string;
+    wordCount: number;
+    processingMethod: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+    user: {
+        id: string;
+        name: string;
+        email: string;
+    };
+}
+
+export interface SaveSummaryResponse {
+    success: boolean;
+    summary: SavedSummary;
+}
+
+export interface GetSummariesResponse {
+    summaries: SavedSummary[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
 }

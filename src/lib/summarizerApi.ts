@@ -1,5 +1,5 @@
 import { apiService } from './api';
-import { SummarizationRequest, SummarizationResponse, FileSummarizationRequest, FileProcessingResult } from '@/types/Summarize';
+import { SummarizationRequest, SummarizationResponse, FileSummarizationRequest, FileProcessingResult, SaveSummaryResponse, GetSummariesResponse, SavedSummary } from '@/types/Summarize';
 
 class SummarizerApiService {
   private baseURL: string;
@@ -47,18 +47,54 @@ class SummarizerApiService {
     }
   }
 
-  async summarizeText(data: SummarizationRequest): Promise<SummarizationResponse> {
+  async summarizeText(data: SummarizationRequest & { save?: boolean; title?: string }): Promise<SummarizationResponse> {
     return this.request<SummarizationResponse>('/summarize', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
-  async summarizeFile(data: FileSummarizationRequest): Promise<FileProcessingResult> {
+  async saveSummary(data: {
+    title: string;
+    originalText: string;
+    summary: string;
+    wordCount: number;
+    processingMethod: string;
+  }): Promise<SaveSummaryResponse> {
+    return this.request('/summarize/save', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getSummaries(params?: { page?: number; limit?: number; search?: string }): Promise<GetSummariesResponse> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append('page', params.page.toString());
+    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    if (params?.search) queryParams.append('search', params.search);
+
+    const queryString = queryParams.toString();
+    return this.request(`/summarize${queryString ? `?${queryString}` : ''}`);
+  }
+
+  async getSummary(id: string): Promise<SavedSummary> {
+    return this.request(`/summarize/${id}`);
+  }
+
+  async deleteSummary(id: string): Promise<{ success: boolean; message: string }> {
+    return this.request(`/summarize/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async summarizeFile(data: FileSummarizationRequest & { title?: string }): Promise<FileProcessingResult> {
     const formData = new FormData();
     formData.append('file', data.file);
     formData.append('word_count', data.word_count.toString());
     formData.append('chunk_size', data.chunk_size.toString());
+    if (data.title) {
+      formData.append('title', data.title);
+    }
 
     const url = `${this.baseURL}/files/upload-and-summarize`;
 

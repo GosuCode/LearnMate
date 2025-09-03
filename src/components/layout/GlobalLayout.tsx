@@ -37,8 +37,10 @@ interface GlobalLayoutProps {
 const navigationItems = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Summarizer", href: "/summarizer", icon: Brain },
-  { name: "Flashcards", href: "/flashcards", icon: BookOpen },
+  { name: "My Summaries", href: "/my-summaries", icon: FileText },
   { name: "Quizzes", href: "/quizzes", icon: FileText },
+  { name: "My Quizzes", href: "/my-quizzes", icon: Brain },
+  { name: "Flashcards", href: "/flashcards", icon: BookOpen },
   { name: "Spaced Repetition", href: "/spaced-repetition", icon: Clock },
   { name: "Subjects & Materials", href: "/subjects", icon: BookOpen },
   { name: "Past Papers", href: "/past-papers", icon: GraduationCap },
