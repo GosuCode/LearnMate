@@ -75,14 +75,14 @@ class FlashcardApiService {
             userId: user.id
         };
 
-        return this.request<FlashcardGenerationResponse>('/flashcards/flashcards', {
+        return this.request<FlashcardGenerationResponse>('/flashcards', {
             method: 'POST',
             body: JSON.stringify(requestData),
         });
     }
 
     async generateMCQs(data: MCQGenerationRequest): Promise<MCQGenerationResponse> {
-        return this.request<MCQGenerationResponse>('/flashcards/mcqs', {
+        return this.request<MCQGenerationResponse>('/mcq', {
             method: 'POST',
             body: JSON.stringify(data),
         });
