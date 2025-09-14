@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { apiService } from '@/lib/api';
-import { AuthState } from '@/types/auth';
+import { AuthState, User } from '@/types/auth';
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -42,6 +42,26 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false
           });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      loginWithGoogle: async (user: User, token: string) => {
+        set({ isLoading: true });
+        try {
+
+          localStorage.setItem('authToken', token);
+          localStorage.setItem('user', JSON.stringify(user));
+
+          set({
+            user,
+            token,
+            isAuthenticated: true,
+            isLoading: false
+          });
+
         } catch (error) {
           set({ isLoading: false });
           throw error;

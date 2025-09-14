@@ -90,6 +90,8 @@ class SummarizerApiService {
 
     if (token) {
       headers.Authorization = `Bearer ${token}`;
+    } else {
+      console.log('File upload - No token found');
     }
 
     try {

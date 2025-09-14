@@ -35,6 +35,7 @@ export interface AuthState {
     isLoading: boolean;
     isAuthenticated: boolean;
     login: (email: string, password: string) => Promise<void>;
+    loginWithGoogle: (user: User, token: string) => Promise<void>;
     register: (name: string, email: string, password: string) => Promise<void>;
     logout: () => void;
     setLoading: (loading: boolean) => void;

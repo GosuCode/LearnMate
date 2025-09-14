@@ -65,7 +65,7 @@ export default function LoginPage() {
   const handleGoogleLogin = useCallback(async () => {
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/google/login"
+        process.env.NEXT_PUBLIC_API_URL + "/auth/google/login"
       );
       const data = await res.json();
       if (data.success && data.data?.authUrl) {
