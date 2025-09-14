@@ -18,17 +18,16 @@ import {
   Brain,
   Calendar,
   Trash2,
-  Play,
   Copy,
   Check,
 } from "lucide-react";
 import { mcqApi, apiService } from "@/lib";
-import { SavedQuiz } from "@/types/mcq";
+import { MCQQuiz } from "@/types/mcq";
 import { useRouter } from "next/navigation";
 
 export default function MyQuizzesPage() {
   const router = useRouter();
-  const [quizzes, setQuizzes] = useState<SavedQuiz[]>([]);
+  const [quizzes, setQuizzes] = useState<MCQQuiz[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,14 +36,9 @@ export default function MyQuizzesPage() {
   const fetchQuizzes = async () => {
     try {
       setLoading(true);
-      console.log("Fetching quizzes...");
-      console.log("Auth token:", apiService.getToken());
-      console.log("Is authenticated:", apiService.isAuthenticated());
       const data = await mcqApi.getSavedQuizzes();
-      console.log("Quizzes data:", data);
-      setQuizzes(data.quizzes);
+      setQuizzes(data.quizzes || []);
     } catch (err) {
-      console.error("Error fetching quizzes:", err);
       setError(
         `Failed to load quizzes: ${
           err instanceof Error ? err.message : "Unknown error"
@@ -56,7 +50,6 @@ export default function MyQuizzesPage() {
   };
 
   useEffect(() => {
-    // Check if user is authenticated
     if (!apiService.isAuthenticated()) {
       router.push("/auth/login");
       return;
@@ -85,10 +78,10 @@ export default function MyQuizzesPage() {
     }
   };
 
-  const filteredQuizzes = quizzes.filter(
+  const filteredQuizzes = (quizzes || []).filter(
     (quiz) =>
       quiz.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quiz.originalText.toLowerCase().includes(searchTerm.toLowerCase())
+      (quiz.description || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -168,10 +161,10 @@ export default function MyQuizzesPage() {
                             {new Date(quiz.createdAt).toLocaleDateString()}
                           </span>
                           <Badge variant="secondary" className="text-xs">
-                            {quiz.totalQuestions} questions
+                            {quiz.questions.length} questions
                           </Badge>
                           <Badge variant="outline" className="text-xs">
-                            {quiz.processingMethod}
+                            MCQ Quiz
                           </Badge>
                         </CardDescription>
                       </div>
@@ -244,15 +237,17 @@ export default function MyQuizzesPage() {
                         )}
                       </div>
 
-                      {/* Original Text */}
-                      <div className="p-3 bg-muted/20 border border-border/30 rounded-lg">
-                        <h4 className="text-xs font-medium text-muted-foreground mb-1">
-                          Original Text
-                        </h4>
-                        <p className="text-xs text-muted-foreground line-clamp-2">
-                          {quiz.originalText}
-                        </p>
-                      </div>
+                      {/* Description */}
+                      {quiz.description && (
+                        <div className="p-3 bg-muted/20 border border-border/30 rounded-lg">
+                          <h4 className="text-xs font-medium text-muted-foreground mb-1">
+                            Description
+                          </h4>
+                          <p className="text-xs text-muted-foreground line-clamp-2">
+                            {quiz.description}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>

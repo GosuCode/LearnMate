@@ -39,11 +39,10 @@ export interface MCQQuiz {
 
 export interface CreateQuizRequest {
     title: string;
-    description?: string;
-    subjectId?: string;
+    originalText: string;
     questions: MCQQuestion[];
-    timeLimit?: number;
-    passingScore?: number;
+    totalQuestions: number;
+    processingMethod: string;
 }
 
 export interface UpdateQuizRequest {

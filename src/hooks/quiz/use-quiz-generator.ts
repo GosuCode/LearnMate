@@ -49,6 +49,28 @@ export function useQuizGenerator() {
                 }),
             )
 
+            try {
+                await mcqApi.createQuiz({
+                    title: `Quiz - ${new Date().toLocaleDateString()}`,
+                    originalText: inputText,
+                    questions: data.mcqs.map((mcq: {
+                        question: string;
+                        options: string[];
+                        correct_answer_index: number;
+                        explanation?: string;
+                    }) => ({
+                        question: mcq.question,
+                        options: mcq.options,
+                        correct_answer_index: mcq.correct_answer_index,
+                        explanation: mcq.explanation || ""
+                    })),
+                    totalQuestions: data.mcqs.length,
+                    processingMethod: data.processing_method || "AI Generation"
+                })
+            } catch (saveError) {
+                console.error("Failed to save quiz:", saveError)
+            }
+
             return transformedQuestions
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Failed to generate MCQs. Please try again."

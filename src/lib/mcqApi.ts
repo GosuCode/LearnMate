@@ -16,13 +16,18 @@ class MCQApiService {
 
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
       },
       ...options,
     };
 
-    // Add auth token if available
+    if (options.body && !config.headers?.['Content-Type' as keyof HeadersInit]) {
+      config.headers = {
+        ...config.headers,
+        'Content-Type': 'application/json',
+      };
+    }
+
     const token = apiService.getToken();
     if (token) {
       config.headers = {
@@ -48,7 +53,6 @@ class MCQApiService {
     }
   }
 
-  // Generate MCQs from text
   async generateMCQs(data: MCQGenerationRequest): Promise<MCQGenerationResponse> {
     return this.request<MCQGenerationResponse>('/mcq', {
       method: 'POST',
@@ -59,7 +63,6 @@ class MCQApiService {
     });
   }
 
-  // Quiz management
   async getQuizzes(): Promise<MCQQuiz[]> {
     return this.request<MCQQuiz[]>('/mcq/quizzes');
   }
@@ -69,7 +72,7 @@ class MCQApiService {
   }
 
   async createQuiz(data: CreateQuizRequest): Promise<MCQQuiz> {
-    return this.request<MCQQuiz>('/mcq/quizzes', {
+    return this.request<MCQQuiz>('/quizzes', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -88,17 +91,25 @@ class MCQApiService {
     });
   }
 
-  // Get quizzes by subject
   async getQuizzesBySubject(subjectId: string): Promise<MCQQuiz[]> {
     return this.request<MCQQuiz[]>(`/subjects/${subjectId}/quizzes`);
   }
 
-  // Search quizzes
   async searchQuizzes(query: string): Promise<MCQQuiz[]> {
     return this.request<MCQQuiz[]>(`/mcq/quizzes/search?q=${encodeURIComponent(query)}`);
   }
 
-  // Quiz results and analytics
+  async getSavedQuizzes(): Promise<{ quizzes: MCQQuiz[] }> {
+    const response = await this.request<{ success: boolean; data: { quizzes: MCQQuiz[] } }>('/quizzes');
+    return { quizzes: response.data.quizzes };
+  }
+
+  async deleteSavedQuiz(id: string): Promise<void> {
+    return this.request<void>(`/quizzes/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   async submitQuizAnswers(quizId: string, answers: Record<string, number>): Promise<{
     score: number;
     totalQuestions: number;

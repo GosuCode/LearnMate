@@ -98,35 +98,28 @@ export default function MySummariesPage() {
     <GlobalLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Header */}
-            <div className="text-center space-y-6">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl mb-4">
-                <FileText className="h-8 w-8 text-white" />
-              </div>
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 dark:from-slate-100 dark:via-blue-100 dark:to-indigo-100 bg-clip-text text-transparent">
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl font-bold text-slate-900 dark:text-slate-100">
                 My Summaries
               </h1>
-              <p className="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                Your personal knowledge library. Search, organize, and access
-                all your saved summaries.
-              </p>
             </div>
 
             {/* Search and Stats */}
-            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+            <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-8">
               <div className="relative w-full lg:w-96">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
-                  placeholder="Search by title or content..."
+                  placeholder="Search summaries..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-12 h-12 text-lg border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-200"
+                  className="pl-10 h-11 border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
                 />
               </div>
-              <div className="flex items-center gap-4">
-                <div className="px-4 py-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
+              <div className="flex items-center gap-3">
+                <div className="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {filteredSummaries.length}{" "}
                     {filteredSummaries.length === 1 ? "summary" : "summaries"}
                   </span>
@@ -154,7 +147,7 @@ export default function MySummariesPage() {
 
           {/* Summaries List */}
           {filteredSummaries.length === 0 ? (
-            <div className="text-center py-20">
+            <div className="text-center py-20 mt-10">
               <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-3xl mb-6">
                 <FileText className="h-12 w-12 text-slate-400 dark:text-slate-500" />
               </div>
@@ -209,6 +202,7 @@ export default function MySummariesPage() {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          title="Copy summary"
                         >
                           {copiedText === summary.id ? (
                             <Check className="h-4 w-4 text-green-600" />
@@ -221,6 +215,7 @@ export default function MySummariesPage() {
                           variant="ghost"
                           size="sm"
                           className="h-8 w-8 p-0 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                          title="Delete summary"
                         >
                           <Trash2 className="h-4 w-4 text-slate-500 hover:text-red-600" />
                         </Button>
