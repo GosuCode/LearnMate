@@ -41,6 +41,7 @@ const navigationItems = [
   { name: "My Summaries", href: "/my-summaries", icon: FileText },
   { name: "Quizzes", href: "/quizzes", icon: FileText },
   { name: "My Quizzes", href: "/my-quizzes", icon: Brain },
+  { name: "BCA Reports", href: "/bca-reports", icon: GraduationCap },
   { name: "Flashcards", href: "/flashcards", icon: BookOpen },
   { name: "Spaced Repetition", href: "/spaced-repetition", icon: Clock },
   { name: "Subjects & Materials", href: "/subjects", icon: BookOpen },
